@@ -1,5 +1,8 @@
 return function()
+	require("modules.utils").gen_lspkind_hl()
+
 	local icons = {
+		cmp = require("modules.utils.icons").get("cmp", true),
 		diagnostics = require("modules.utils.icons").get("diagnostics", true),
 		kind = require("modules.utils.icons").get("kind", true),
 		type = require("modules.utils.icons").get("type", true),
@@ -22,8 +25,6 @@ return function()
 
 	set_sidebar_icons()
 
-	local colors = require("modules.utils").get_palette()
-
 	require("lspsaga").setup({
 		preview = {
 			lines_above = 1,
@@ -37,7 +38,7 @@ return function()
 		finder = {
 			keys = {
 				jump_to = "e",
-				edit = { "o", "<CR>" },
+				expand_or_jump = "<CR>",
 				vsplit = "s",
 				split = "i",
 				tabe = "t",
@@ -51,7 +52,6 @@ return function()
 			split = "<C-c>s",
 			tabe = "<C-c>t",
 			quit = "q",
-			close = "<Esc>",
 		},
 		code_action = {
 			num_shortcut = true,
@@ -68,14 +68,20 @@ return function()
 			virtual_text = false,
 		},
 		diagnostic = {
+			text_hl_follow = true,
+			on_insert = true,
+			on_insert_follow = false,
 			show_code_action = true,
-			border_follow = true,
 			show_source = true,
+			border_follow = true,
+			extend_relatedInformation = false,
 			jump_num_shortcut = true,
 			keys = {
-				exec_action = "<CR>",
+				exec_action = "r",
 				quit = "q",
 				go_action = "g",
+				expand_or_jump = "<CR>",
+				quit_in_show = { "q", "<ESC>" },
 			},
 		},
 		rename = {
@@ -85,17 +91,20 @@ return function()
 			exec = "<CR>",
 			in_select = true,
 		},
+		hover = {
+			open_link = "gl",
+			open_browser = "silent !" .. require("core.settings").external_browser,
+		},
 		outline = {
 			win_position = "right",
 			win_with = "_sagaoutline",
 			win_width = 30,
-			show_detail = true,
 			auto_preview = false,
 			auto_refresh = true,
 			auto_close = true,
+			close_after_jump = true,
 			keys = {
-				jump = "<CR>",
-				expand_collapse = "u",
+				expand_or_jump = "<CR>",
 				quit = "q",
 			},
 		},
@@ -111,55 +120,53 @@ return function()
 			frequency = 12,
 		},
 		ui = {
-			theme = "round",
 			border = "single", -- Can be single, double, rounded, solid, shadow.
 			winblend = 0,
+			actionfix = icons.ui.Spell,
 			expand = icons.ui.ArrowClosed,
 			collapse = icons.ui.ArrowOpen,
-			preview = icons.ui.Newspaper,
 			code_action = icons.ui.CodeAction,
-			diagnostic = icons.ui.Bug,
 			incoming = icons.ui.Incoming,
 			outgoing = icons.ui.Outgoing,
 			kind = {
 				-- Kind
-				Class = { icons.kind.Class, colors.yellow },
-				Constant = { icons.kind.Constant, colors.peach },
-				Constructor = { icons.kind.Constructor, colors.sapphire },
-				Enum = { icons.kind.Enum, colors.yellow },
-				EnumMember = { icons.kind.EnumMember, colors.teal },
-				Event = { icons.kind.Event, colors.yellow },
-				Field = { icons.kind.Field, colors.teal },
-				File = { icons.kind.File, colors.rosewater },
-				Function = { icons.kind.Function, colors.blue },
-				Interface = { icons.kind.Interface, colors.yellow },
-				Key = { icons.kind.Keyword, colors.red },
-				Method = { icons.kind.Method, colors.blue },
-				Module = { icons.kind.Module, colors.blue },
-				Namespace = { icons.kind.Namespace, colors.blue },
-				Number = { icons.kind.Number, colors.peach },
-				Operator = { icons.kind.Operator, colors.sky },
-				Package = { icons.kind.Package, colors.blue },
-				Property = { icons.kind.Property, colors.teal },
-				Struct = { icons.kind.Struct, colors.yellow },
-				TypeParameter = { icons.kind.TypeParameter, colors.maroon },
-				Variable = { icons.kind.Variable, colors.peach },
+				Class = { icons.kind.Class, "LspKindClass" },
+				Constant = { icons.kind.Constant, "LspKindConstant" },
+				Constructor = { icons.kind.Constructor, "LspKindConstructor" },
+				Enum = { icons.kind.Enum, "LspKindEnum" },
+				EnumMember = { icons.kind.EnumMember, "LspKindEnumMember" },
+				Event = { icons.kind.Event, "LspKindEvent" },
+				Field = { icons.kind.Field, "LspKindField" },
+				File = { icons.kind.File, "LspKindFile" },
+				Function = { icons.kind.Function, "LspKindFunction" },
+				Interface = { icons.kind.Interface, "LspKindInterface" },
+				Key = { icons.kind.Keyword, "LspKindKey" },
+				Method = { icons.kind.Method, "LspKindMethod" },
+				Module = { icons.kind.Module, "LspKindModule" },
+				Namespace = { icons.kind.Namespace, "LspKindNamespace" },
+				Number = { icons.kind.Number, "LspKindNumber" },
+				Operator = { icons.kind.Operator, "LspKindOperator" },
+				Package = { icons.kind.Package, "LspKindPackage" },
+				Property = { icons.kind.Property, "LspKindProperty" },
+				Struct = { icons.kind.Struct, "LspKindStruct" },
+				TypeParameter = { icons.kind.TypeParameter, "LspKindTypeParameter" },
+				Variable = { icons.kind.Variable, "LspKindVariable" },
 				-- Type
-				Array = { icons.type.Array, colors.peach },
-				Boolean = { icons.type.Boolean, colors.peach },
-				Null = { icons.type.Null, colors.yellow },
-				Object = { icons.type.Object, colors.yellow },
-				String = { icons.type.String, colors.green },
+				Array = { icons.type.Array, "LspKindArray" },
+				Boolean = { icons.type.Boolean, "LspKindBoolean" },
+				Null = { icons.type.Null, "LspKindNull" },
+				Object = { icons.type.Object, "LspKindObject" },
+				String = { icons.type.String, "LspKindString" },
 				-- ccls-specific icons.
-				TypeAlias = { icons.kind.TypeAlias, colors.green },
-				Parameter = { icons.kind.Parameter, colors.blue },
-				StaticMethod = { icons.kind.StaticMethod, colors.peach },
+				TypeAlias = { icons.kind.TypeAlias, "LspKindTypeAlias" },
+				Parameter = { icons.kind.Parameter, "LspKindParameter" },
+				StaticMethod = { icons.kind.StaticMethod, "LspKindStaticMethod" },
 				-- Microsoft-specific icons.
-				Text = { icons.kind.Text, colors.green },
-				Snippet = { icons.kind.Snippet, colors.mauve },
-				Folder = { icons.kind.Folder, colors.blue },
-				Unit = { icons.kind.Unit, colors.green },
-				Value = { icons.kind.Value, colors.peach },
+				Text = { icons.kind.Text, "LspKindText" },
+				Snippet = { icons.kind.Snippet, "LspKindSnippet" },
+				Folder = { icons.kind.Folder, "LspKindFolder" },
+				Unit = { icons.kind.Unit, "LspKindUnit" },
+				Value = { icons.kind.Value, "LspKindValue" },
 			},
 		},
 	})

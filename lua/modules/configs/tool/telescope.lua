@@ -23,6 +23,11 @@ return function()
 			file_sorter = require("telescope.sorters").get_fuzzy_file,
 			generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
 		},
+		pickers = {
+			keymaps = {
+				theme = "dropdown",
+			},
+		},
 		extensions = {
 			fzf = {
 				fuzzy = false,
@@ -47,9 +52,6 @@ return function()
 			},
 			undo = {
 				side_by_side = true,
-				layout_config = {
-					preview_height = 0.8,
-				},
 				mappings = { -- this whole table is the default
 					i = {
 						-- IMPORTANT: Note that telescope-undo must be available when telescope is configured if
@@ -65,11 +67,11 @@ return function()
 		},
 	})
 
-	require("telescope").load_extension("notify")
-	require("telescope").load_extension("fzf")
-	require("telescope").load_extension("projects")
-	require("telescope").load_extension("zoxide")
 	require("telescope").load_extension("frecency")
+	require("telescope").load_extension("fzf")
 	require("telescope").load_extension("live_grep_args")
+	require("telescope").load_extension("notify")
+	require("telescope").load_extension("projects")
 	require("telescope").load_extension("undo")
+	require("telescope").load_extension("zoxide")
 end
