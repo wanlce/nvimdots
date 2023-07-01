@@ -5,10 +5,19 @@ editor["rainbowhxch/accelerated-jk.nvim"] = {
 	event = "VeryLazy",
 	config = require("editor.accelerated-jk"),
 }
-editor["rmagatti/auto-session"] = {
+editor["olimorris/persisted.nvim"] = {
 	lazy = true,
-	cmd = { "SaveSession", "RestoreSession", "DeleteSession" },
-	config = require("editor.auto-session"),
+	cmd = {
+		"SessionToggle",
+		"SessionStart",
+		"SessionStop",
+		"SessionSave",
+		"SessionLoad",
+		"SessionLoadLast",
+		"SessionLoadFromFile",
+		"SessionDelete",
+	},
+	config = require("editor.persisted"),
 }
 editor["m4xshen/autoclose.nvim"] = {
 	lazy = true,
@@ -58,13 +67,14 @@ editor["RRethy/vim-illuminate"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.vim-illuminate"),
 }
-editor["luukvbaal/stabilize.nvim"] = {
-	lazy = true,
-	event = "BufReadPost",
-}
 editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
+}
+editor["lambdalisue/suda.vim"] = {
+	lazy = true,
+	cmd = { "SudaRead", "SudaWrite" },
+	config = require("editor.suda"),
 }
 
 ----------------------------------------------------------------------
@@ -85,6 +95,10 @@ editor["nvim-treesitter/nvim-treesitter"] = {
 		{ "JoosepAlviste/nvim-ts-context-commentstring" },
 		{ "mfussenegger/nvim-treehopper" },
 		{ "andymass/vim-matchup" },
+		{
+			"nvim-treesitter/nvim-treesitter-context",
+			config = require("editor.ts-context"),
+		},
 		{
 			"windwp/nvim-ts-autotag",
 			config = require("editor.autotag"),
